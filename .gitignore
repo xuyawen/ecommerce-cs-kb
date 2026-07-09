@@ -8,3 +8,6 @@ dist/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# 本地 GitHub token（仅沙箱推送用，切勿提交）
+.github_token
