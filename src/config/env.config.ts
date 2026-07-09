@@ -1,13 +1,24 @@
 // 集中读取环境变量（对齐 .env.example）
 export const ENV = {
   port: Number(process.env.PORT) || 3000,
-  useMock: process.env.USE_MOCK === 'true' || !process.env.OPENAI_API_KEY,
+  // 兼容旧变量名（OPENAI_*）以平滑迁移；优先使用通用 LLM_* 名称
+  useMock:
+    process.env.USE_MOCK === 'true' ||
+    !(process.env.LLM_API_KEY || process.env.OPENAI_API_KEY),
 
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || 'sk-mock',
-    baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
-    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-    embedModel: process.env.OPENAI_EMBED_MODEL || 'text-embedding-3-small',
+  llm: {
+    apiKey:
+      process.env.LLM_API_KEY || process.env.OPENAI_API_KEY || 'sk-mock',
+    baseURL:
+      process.env.LLM_BASE_URL ||
+      process.env.OPENAI_BASE_URL ||
+      'https://api.openai.com/v1',
+    model:
+      process.env.LLM_MODEL || process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    embedModel:
+      process.env.LLM_EMBED_MODEL ||
+      process.env.OPENAI_EMBED_MODEL ||
+      'text-embedding-3-small',
   },
 
   milvus: {

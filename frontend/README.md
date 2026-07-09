@@ -43,7 +43,7 @@ npm run dev              # 访问 http://localhost:5173
 ```
 
 > 开发模式下 Vite 已配置 `/api` 代理到 `localhost:3000`，无需处理跨域。
-> 若后端未配 `OPENAI_API_KEY`，会走 `USE_MOCK=true` 的 Mock 链路，前端照样能演示流式效果。
+> 若后端未配 `LLM_API_KEY`，会走 `USE_MOCK=true` 的 Mock 链路，前端照样能演示流式效果。
 
 ## 生产构建
 

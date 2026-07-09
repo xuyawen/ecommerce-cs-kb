@@ -27,7 +27,7 @@ frontend/                    # React 流式对话界面（Vite）
 
 ### 1) 后端
 ```bash
-cp .env.example .env         # 填入 OPENAI_API_KEY（或设 USE_MOCK=true 先跑结构）
+cp .env.example .env         # 填入 LLM_API_KEY（或设 USE_MOCK=true 先跑结构）
 docker compose up -d         # 起 Milvus / ES / PG / Redis
 npm install --legacy-peer-deps
 npm run start:dev            # http://localhost:3000
@@ -40,7 +40,7 @@ npm install
 npm run dev                  # http://localhost:5173（已配置 /api 代理到 :3000）
 ```
 > 开发模式 Vite 自动把 `/api` 代理到后端 `:3000`，无需处理跨域。
-> 未配 `OPENAI_API_KEY` 时后端走 Mock 链路，前端照样能演示流式效果。
+> 未配 `LLM_API_KEY` 时后端走 Mock 链路，前端照样能演示流式效果。
 
 ## 接口示例
 ```bash
@@ -63,4 +63,4 @@ curl -X POST http://localhost:3000/api/ingest \
   - 向量库 SDK 包名现为 **`@zilliz/milvus2-sdk-node`**（旧名 `milvus2-sdk-node` 已废弃）。
   - `@langchain/community` 的 Milvus 为**命名导出** `{ Milvus }`，构造参数用 `url`、检索方法为 `similaritySearchVectorWithScore`。
   - 记忆层（Redis）对连接失败做了**容错降级**，无 Redis 也能跑通主链路。
-- 完整运行需 `docker compose up -d` 起 Milvus/ES/PG/Redis，并配置 `OPENAI_API_KEY`。
+- 完整运行需 `docker compose up -d` 起 Milvus/ES/PG/Redis，并配置 `LLM_API_KEY`。

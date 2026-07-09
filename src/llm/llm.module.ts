@@ -13,20 +13,20 @@ export const EMBEDDINGS = 'EMBEDDINGS';
       provide: CHAT_MODEL,
       useFactory: () =>
         new ChatOpenAI({
-          apiKey: ENV.openai.apiKey,
-          model: ENV.openai.model,
+          apiKey: ENV.llm.apiKey,
+          model: ENV.llm.model,
           temperature: 0.3,
           streaming: true, // 第 18 章：流式输出
-          configuration: { baseURL: ENV.openai.baseURL },
+          configuration: { baseURL: ENV.llm.baseURL },
         }),
     },
     {
       provide: EMBEDDINGS,
       useFactory: () =>
         new OpenAIEmbeddings({
-          apiKey: ENV.openai.apiKey,
-          model: ENV.openai.embedModel,
-          configuration: { baseURL: ENV.openai.baseURL },
+          apiKey: ENV.llm.apiKey,
+          model: ENV.llm.embedModel,
+          configuration: { baseURL: ENV.llm.baseURL },
         }),
     },
   ],

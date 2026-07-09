@@ -75,7 +75,7 @@ export class AgentService {
     const reply =
       `[mock] 收到：${message}\n` +
       `（已模拟）检索到退换货政策片段，并调用订单工具：订单 SO123 状态=SHIPPED，物流=顺丰，最新节点=派送中。\n` +
-      `配置 OPENAI_API_KEY 后，此处即为真实大模型生成的流式回答。`;
+      `配置 LLM_API_KEY 后，此处即为真实大模型生成的流式回答。`;
     for (const ch of reply) {
       yield ch;
       await new Promise((r) => setTimeout(r, 12));
