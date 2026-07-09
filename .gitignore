@@ -3,3 +3,8 @@ dist/
 .env
 *.log
 .DS_Store
+
+# build artifacts (tsc -b composite 会额外产出)
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
