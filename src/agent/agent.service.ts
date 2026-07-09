@@ -31,7 +31,7 @@ export class AgentService {
   ): AsyncGenerator<string> {
     const history: ChatTurn[] = await this.memory.getHistory(sessionId);
 
-    // Mock 模式：无 API Key 也能演示整体链路
+    // Mock 模式：无 API Key 也能跑通整体链路
     if (ENV.useMock) {
       yield* this.mockStream(message);
       return;

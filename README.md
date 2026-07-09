@@ -1,6 +1,6 @@
 # 电商智能客服知识库（Agentic RAG）
 
-> AI 应用 / 智能体开发工程师求职作品。基于企业私有知识做准确问答，并能调工具处理实时业务（查订单 / 查物流 / 发起退款），支持流式对话与多模态。
+> 企业级电商智能客服知识库（Agentic RAG）。基于企业私有知识做准确问答，并能调工具处理实时业务（查订单 / 查物流 / 发起退款），支持流式对话与多模态。
 
 ## 技术栈
 **后端**：Nest.js · LangChain.js · LangGraph · Milvus · Elasticsearch · PostgreSQL · Redis · Docker
@@ -40,7 +40,7 @@ npm install
 npm run dev                  # http://localhost:5173（已配置 /api 代理到 :3000）
 ```
 > 开发模式 Vite 自动把 `/api` 代理到后端 `:3000`，无需处理跨域。
-> 未配 `LLM_API_KEY` 时后端走 Mock 链路，前端照样能演示流式效果。
+> 未配 `LLM_API_KEY` 时后端走 Mock 链路，前端照样能验证流式效果。
 
 ## 接口示例
 ```bash
@@ -56,7 +56,7 @@ curl -X POST http://localhost:3000/api/ingest \
 ```
 
 ## 说明
-- `USE_MOCK=true` 且未配置 Key 时，接口以 mock 数据返回，便于无 LLM 情况下演示整体结构（已验证：应用可启动、SSE 流式、健康检查均正常）。
+- `USE_MOCK=true` 且未配置 Key 时，接口以 mock 数据返回，便于无 LLM 情况下验证整体结构（已验证：应用可启动、SSE 流式、健康检查均正常）。
 - 课程对应章节：RAG(6/10)、混合检索(26/27)、LangGraph(23/24)、Nest 流式(18/35)、PG(32)、Redis(33)、Docker(25)、多模态(40)。
 - 依赖与版本要点（已对齐可编译）：
   - LangChain 生态已到 **core 1.x**，安装务必加 `--legacy-peer-deps`。

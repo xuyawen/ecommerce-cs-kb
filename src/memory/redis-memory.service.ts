@@ -8,7 +8,7 @@ export interface ChatTurn {
 }
 
 // 短期记忆：Redis 维护多轮会话（第 33 章）。采用截断策略（只保留最近 N 条）
-// 容错：Redis 未启动时不抛错，降级为「无记忆」以保证服务可用（便于 mock 演示）
+// 容错：Redis 未启动时不抛错，降级为「无记忆」以保证服务可用
 @Injectable()
 export class RedisMemoryService {
   private client: Redis;

@@ -43,7 +43,7 @@ npm run dev              # 访问 http://localhost:5173
 ```
 
 > 开发模式下 Vite 已配置 `/api` 代理到 `localhost:3000`，无需处理跨域。
-> 若后端未配 `LLM_API_KEY`，会走 `USE_MOCK=true` 的 Mock 链路，前端照样能演示流式效果。
+> 若后端未配 `LLM_API_KEY`，会走 `USE_MOCK=true` 的 Mock 链路，前端照样能验证流式效果。
 
 ## 生产构建
 
@@ -54,7 +54,7 @@ npm run preview
 
 部署时由 Nginx 将 `/` 指向前端静态资源、`/api` 反代到后端即可。
 
-## 可扩展点（面试加分）
+## 可扩展方向
 
 - 引用 chip 点击跳转知识库原文（需后端在 SSE 中下发结构化 `citation` 事件）。
 - 工具调用过程可视化（如「🔍 检索知识库 → 🛠 查询订单」步骤条）。
