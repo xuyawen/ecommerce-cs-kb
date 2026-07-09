@@ -10,4 +10,10 @@ export class IngestController {
   async ingest(@Body() dto: IngestDto) {
     return await this.svc.ingest(dto.title, dto.text, dto.sourceType);
   }
+
+  // 一键重灌：用当前 embedding 模型重新向量化 kb_documents 中的全部原始文档
+  @Post('reindex')
+  async reindex() {
+    return await this.svc.reindex();
+  }
 }
