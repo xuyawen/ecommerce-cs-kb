@@ -3,7 +3,8 @@
 > AI 应用 / 智能体开发工程师求职作品。基于企业私有知识做准确问答，并能调工具处理实时业务（查订单 / 查物流 / 发起退款），支持流式对话与多模态。
 
 ## 技术栈
-Nest.js · LangChain.js · LangGraph · Milvus · Elasticsearch · PostgreSQL · Redis · Docker
+**后端**：Nest.js · LangChain.js · LangGraph · Milvus · Elasticsearch · PostgreSQL · Redis · Docker
+**前端**：Vite · React · TypeScript（流式对话 UI，见 `frontend/`）
 
 ## 目录结构
 ```
@@ -19,15 +20,27 @@ src/
 │   └── tools/               # 订单/物流/退款工具
 ├── memory/                  # Redis 短期记忆
 └── ingest/                  # 文档入库 pipeline（loader + splitter）
+frontend/                    # React 流式对话界面（Vite）
 ```
 
 ## 快速开始
+
+### 1) 后端
 ```bash
 cp .env.example .env         # 填入 OPENAI_API_KEY（或设 USE_MOCK=true 先跑结构）
 docker compose up -d         # 起 Milvus / ES / PG / Redis
 npm install --legacy-peer-deps
 npm run start:dev            # http://localhost:3000
 ```
+
+### 2) 前端（另开终端）
+```bash
+cd frontend
+npm install
+npm run dev                  # http://localhost:5173（已配置 /api 代理到 :3000）
+```
+> 开发模式 Vite 自动把 `/api` 代理到后端 `:3000`，无需处理跨域。
+> 未配 `OPENAI_API_KEY` 时后端走 Mock 链路，前端照样能演示流式效果。
 
 ## 接口示例
 ```bash
