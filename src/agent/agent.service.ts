@@ -47,13 +47,14 @@ export class AgentService {
       };
       const stream = await agent.stream(inputs, { recursionLimit: 8 });
       for await (const chunk of stream) {
-        const msg =
-          chunk?.agent?.messages?.[0] ?? chunk?.tools?.messages?.[0];
+        // 只把模型(agent)生成的回复推给用户；工具原始返回(如物流 JSON)仅用于内部推理，不外泄到界面
+        const agentMsg = chunk?.agent?.messages?.[0];
+        if (!agentMsg) continue;
         const text =
-          typeof msg?.content === 'string'
-            ? msg.content
-            : msg?.content
-              ? JSON.stringify(msg.content)
+          typeof agentMsg.content === 'string'
+            ? agentMsg.content
+            : agentMsg.content
+              ? JSON.stringify(agentMsg.content)
               : '';
         if (text) yield text;
       }
