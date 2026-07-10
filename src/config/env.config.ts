@@ -1,24 +1,23 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // 必须在计算 ENV 之前加载 .env，否则 useMock 会在 .env 注入前被误判为 true
+
 // 集中读取环境变量（对齐 .env.example）
 export const ENV = {
   port: Number(process.env.PORT) || 3000,
-  // 兼容旧变量名（OPENAI_*）以平滑迁移；优先使用通用 LLM_* 名称
+  // 使用通用 LLM_* 名称
   useMock:
     process.env.USE_MOCK === 'true' ||
-    !(process.env.LLM_API_KEY || process.env.OPENAI_API_KEY),
+    !process.env.LLM_API_KEY,
 
   llm: {
     apiKey:
-      process.env.LLM_API_KEY || process.env.OPENAI_API_KEY || 'sk-mock',
+      process.env.LLM_API_KEY || 'sk-mock',
     baseURL:
-      process.env.LLM_BASE_URL ||
-      process.env.OPENAI_BASE_URL ||
-      'https://api.openai.com/v1',
+      process.env.LLM_BASE_URL,
     model:
-      process.env.LLM_MODEL || process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      process.env.LLM_MODEL,
     embedModel:
-      process.env.LLM_EMBED_MODEL ||
-      process.env.OPENAI_EMBED_MODEL ||
-      'text-embedding-3-small',
+      process.env.LLM_EMBED_MODEL,
   },
 
   milvus: {
