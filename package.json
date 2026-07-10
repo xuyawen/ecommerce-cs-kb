@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nest build",
     "start": "npm run build && node dist/main.js",
-    "start:dev": "concurrently \"tsc --watch\" \"nodemon --watch dist dist/main.js\"",
+    "start:dev": "nest start --watch",
     "start:prod": "npm run build && node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
   },
@@ -36,8 +36,6 @@
     "@nestjs/schematics": "^10.1.0",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.11.0",
-    "concurrently": "^9.1.0",
-    "nodemon": "^3.1.7",
     "typescript": "5.6.3"
   },
   "overrides": {

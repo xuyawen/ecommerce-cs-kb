@@ -1,9 +1,25 @@
 import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
+import * as net from 'net';
 import { Document } from '@langchain/core/documents';
 import { Milvus } from '@langchain/community/vectorstores/milvus';
 import { MilvusClient } from '@zilliz/milvus2-sdk-node';
 import { ENV } from '../config/env.config';
 import { EMBEDDINGS } from '../llm/llm.module';
+
+// ponytail: stdlib TCP 探活，避免在 Milvus 未就绪时让 SDK 抛出未捕获异常把进程干掉
+function tcpReachable(host: string, port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const socket = net.createConnection({ host, port });
+    const done = (ok: boolean) => {
+      socket.destroy();
+      resolve(ok);
+    };
+    socket.setTimeout(1500, () => done(false));
+    socket.once('connect', () => done(true));
+    socket.once('error', () => done(false));
+    socket.once('timeout', () => done(false));
+  });
+}
 
 // 向量存储（Milvus）—— 语义检索（第 9-10 章）
 // 注：Milvus SDK 在不同 @langchain 版本构造函数/方法名有差异（旧版用 address、
@@ -42,6 +58,8 @@ export class VectorStoreService implements OnModuleInit {
   async onModuleInit() {
     if (ENV.useMock) return; // mock 无真实 embedding 模型，跳过
     try {
+      // 先等 Milvus 端口可达，避免 SDK 在不可达时抛未捕获异常导致进程崩溃
+      await this.waitForMilvus();
       const expected = await this.detectDimension();
       const actual = await this.existingDimension();
       if (actual != null && actual !== expected) {
@@ -61,6 +79,18 @@ export class VectorStoreService implements OnModuleInit {
       if (e?.message?.includes('[维度不匹配]')) throw e; // 致命：阻断启动
       console.warn('[dimension] 自检跳过（Milvus 未就绪或不可达）：', e?.message ?? e);
     }
+  }
+
+  // ponytail: 启动期 TCP 探活 + 重试，Milvus 未就绪时等待而非崩溃；默认 15 次 * 2s ≈ 30s
+  private async waitForMilvus(retries = 15, delayMs = 2000): Promise<void> {
+    const [host, portStr] = ENV.milvus.address.split(':');
+    const port = Number(portStr) || 19530;
+    for (let i = 1; i <= retries; i++) {
+      if (await tcpReachable(host, port)) return;
+      console.log(`[dimension] 等待 Milvus (${ENV.milvus.address}) 就绪 ${i}/${retries}...`);
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+    throw new Error(`Milvus (${ENV.milvus.address}) 在等待期内未就绪`);
   }
 
   // 通过一次真实向量化探测 embedding 模型输出维度

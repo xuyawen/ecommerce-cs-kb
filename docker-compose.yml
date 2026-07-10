@@ -8,9 +8,22 @@ services:
       - .env
     depends_on:
       - milvus
+      - etcd
       - elasticsearch
       - postgres
       - redis
+    restart: unless-stopped
+
+  # 元数据协调服务（Milvus 2.6 standalone 镜像不再内置 etcd，需外部提供）
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.11
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - "2379:2379"
+    volumes:
+      - etcd_data:/etcd
     restart: unless-stopped
 
   # 向量数据库
@@ -19,8 +32,15 @@ services:
     command: ["milvus", "run", "standalone"]
     ports:
       - "19530:19530"
+    environment:
+      # 指向上面独立的 etcd 服务（覆盖镜像默认 localhost:2379）
+      - ETCD_ENDPOINTS=etcd:2379
+      # Milvus 2.6 standalone 不再内置 MinIO，改用本地磁盘存储，省去对象存储依赖
+      - COMMON_STORAGETYPE=local
     volumes:
       - milvus_data:/var/lib/milvus
+    depends_on:
+      - etcd
     restart: unless-stopped
 
   # 关键词检索
@@ -59,6 +79,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  etcd_data:
   milvus_data:
   es_data:
   pg_data:
