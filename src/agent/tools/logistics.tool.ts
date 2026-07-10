@@ -1,19 +1,26 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { Pool } from 'pg';
+import { ensureOrderSchema } from './order-schema';
 
 // 工具：查询物流轨迹
 export function makeLogisticsTool(pool: Pool) {
   return tool(
     async ({ orderNo }) => {
-      const r = await pool.query(
-        `SELECT carrier, tracking_no, status, last_node, updated_at
-         FROM logistics WHERE order_no = $1 ORDER BY updated_at DESC LIMIT 1`,
-        [orderNo],
-      );
-      return r.rows[0]
-        ? JSON.stringify(r.rows[0])
-        : `未查询到 ${orderNo} 的物流信息`;
+      try {
+        await ensureOrderSchema(pool);
+        const r = await pool.query(
+          `SELECT carrier, tracking_no, status, last_node, updated_at
+           FROM logistics WHERE order_no = $1 ORDER BY updated_at DESC LIMIT 1`,
+          [orderNo],
+        );
+        return r.rows[0]
+          ? JSON.stringify(r.rows[0])
+          : `未查询到 ${orderNo} 的物流信息`;
+      } catch (e: any) {
+        console.warn('[logistics_query] 查询失败：', e?.message ?? e);
+        return `暂时无法查询 ${orderNo} 的物流信息，请稍后重试或联系人工客服。`;
+      }
     },
     {
       name: 'logistics_query',
