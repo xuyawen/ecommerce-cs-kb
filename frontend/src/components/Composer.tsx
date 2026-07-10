@@ -38,7 +38,7 @@ export function Composer({ value, onChange, onSend, streaming }: Props) {
         value={value}
         onChange={autoGrow}
         onKeyDown={onKeyDown}
-        placeholder={streaming ? '生成中…（可继续输入，回车发送）' : '输入问题，Enter 发送，Shift+Enter 换行'}
+        placeholder={streaming ? '正在生成回复…（可继续输入）' : '输入问题，Enter 发送，Shift+Enter 换行'}
         rows={1}
       />
       <button className="send" onClick={submit} disabled={streaming || !value.trim()}>

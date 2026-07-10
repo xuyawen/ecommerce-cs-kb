@@ -18,29 +18,26 @@ export function Sidebar({ sessionId, onReset, streaming }: Props) {
 
       <div className="meta">
         <div className="meta-row">
-          <span>会话 ID</span>
+          <span>会话</span>
           <code title={sessionId}>{sessionId.slice(0, 12)}…</code>
         </div>
         <div className="meta-row">
           <span>状态</span>
           <span className={streaming ? 'badge live' : 'badge idle'}>
-            {streaming ? '生成中' : '空闲'}
+            {streaming ? '生成中' : '在线'}
           </span>
         </div>
         <div className="meta-row">
           <span>模式</span>
-          <span className="badge mock">Agentic RAG</span>
+          <span className="badge mock">智能问答</span>
         </div>
       </div>
 
-      <div className="tips">
-        <div className="tips-title">技术栈</div>
-        <ul>
-          <li>Nest.js + LangGraph</li>
-          <li>Milvus + ES 混合检索</li>
-          <li>RRF 重排 · Redis 记忆</li>
-          <li>SSE 流式输出</li>
-        </ul>
+      <div className="sidebar-foot">
+        <p className="foot-note">回答由 AI 生成，仅供参考，请以店铺官方政策为准。</p>
+        <button className="foot-link" type="button">
+          需要人工帮助？联系客服 →
+        </button>
       </div>
     </aside>
   );

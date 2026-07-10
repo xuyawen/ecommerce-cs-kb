@@ -41,24 +41,40 @@ const mdComponents = {
 export function MessageBubble({ msg }: { msg: ChatMessage }) {
   const parts = splitCitations(msg.content);
   const cites = parts.filter((p) => p.type === 'cite').map((p) => p.value);
+  // Agent 正在生成、且尚未吐出任何内容时，展示“思考中”文字提示
+  const thinking =
+    msg.role === 'assistant' && !msg.done && !msg.error && msg.content.trim() === '';
 
   return (
     <div className={`msg ${msg.role}`}>
       <div className="avatar">{msg.role === 'user' ? '你' : 'AI'}</div>
       <div className="bubble">
-        {parts.map((p, i) =>
-          p.type === 'cite' ? (
-            <span key={i} className="cite-chip">
-              📎 {p.value}
+        {thinking ? (
+          <div className="thinking">
+            <span className="thinking-dots">
+              <i />
+              <i />
+              <i />
             </span>
-          ) : (
-            <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {p.value}
-            </ReactMarkdown>
-          ),
+            <span className="thinking-text">正在思考，请稍候…</span>
+          </div>
+        ) : (
+          <>
+            {parts.map((p, i) =>
+              p.type === 'cite' ? (
+                <span key={i} className="cite-chip">
+                  📎 {p.value}
+                </span>
+              ) : (
+                <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={mdComponents}>
+                  {p.value}
+                </ReactMarkdown>
+              ),
+            )}
+            {!msg.done && !msg.error && <span className="cursor">▍</span>}
+          </>
         )}
 
-        {!msg.done && !msg.error && <span className="cursor">▍</span>}
         {msg.error && <div className="err">⚠ 出错了，请重试</div>}
 
         {cites.length > 0 && msg.done && (
